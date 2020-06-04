@@ -1,13 +1,13 @@
-name: 'Wait'
+name: 'Commit Check Regex'
 description: 'Wait a designated number of milliseconds'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  items:  # id of input
+    description: 'array of regular expressions'
     required: true
-    default: '1000'
+    default: '.*'
 outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  items: # output will be available to future steps 
+    description: 'array of booleans corresponding to inputs'
 runs:
   using: 'node12'
   main: 'dist/index.js'
