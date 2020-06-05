@@ -191,14 +191,14 @@ const repo    = github.context.payload.repository;
 const org     = repo.organization;
 const owner   = org || repo.owner;*/
 
-const FILES          = new Set();
-const FILES_MODIFIED = new Set();
-const FILES_ADDED    = new Set();
-const FILES_DELETED  = new Set();
-const FILES_RENAMED  = new Set();
+const FILES          = [];
+// const FILES_MODIFIED = new Set();
+// const FILES_ADDED    = new Set();
+// const FILES_DELETED  = new Set();
+// const FILES_RENAMED  = new Set();
 
 const gh    = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
-const items = core.getInput('items');
+const inputItems = core.getInput('items');
 const args  = { owner: owner.name || owner.login, repo: repo.name };
 
 function debug(msg, obj = null) {
@@ -232,7 +232,7 @@ function isRenamed(file) {
 async function getCommits() {
 	let commits;
 
-	debug('Getting commits...');
+	//debug('Getting commits...');
 
 	switch(context.eventName) {
 		case 'push':
@@ -256,28 +256,28 @@ async function getCommits() {
 }
 
 async function processCommit(commit) {
-	debug('Processing commit', commit);
+	//debug('Processing commit', commit);
 
 	args.ref = commit.id || commit.sha;
 
-	debug('Calling gh.repos.getCommit() with args', args)
+	//debug('Calling gh.repos.getCommit() with args', args)
 
 	let result = await gh.repos.getCommit(args);
 
-	debug('API Response', result);
+	//debug('API Response', result);
 
 	if (result && result.data) {
 		const files = result.data.files;
 
 		files.forEach( file => {
-			isModified(file) && FILES.add(file.filename);
-			isAdded(file) && FILES.add(file.filename);
-			isRenamed(file) && FILES.add(file.filename);
+			isModified(file) && FILES.push(file.filename);
+			isAdded(file) && FILES.push(file.filename);
+			isRenamed(file) && FILES.push(file.filename);
 
-			isModified(file) && FILES_MODIFIED.add(file.filename);
-			isAdded(file) && FILES_ADDED.add(file.filename);
-			isDeleted(file) && FILES_DELETED.add(file.filename);
-			isRenamed(file) && FILES_RENAMED.add(file.filename);
+			// isModified(file) && FILES_MODIFIED.push(file.filename);
+			// isAdded(file) && FILES_ADDED.add(file.filename);
+			// isDeleted(file) && FILES_DELETED.add(file.filename);
+			// isRenamed(file) && FILES_RENAMED.add(file.filename);
 		});
 	}
 }
@@ -287,21 +287,30 @@ function toJSON(value) {
 }
 
 
-debug('context', context);
-debug('args', args);
+//debug('context', context);
+//debug('args', args);
 
 getCommits().then(commits => {
-	debug('All Commits', commits);
+	//debug('All Commits', commits);
 
 	if ('push' === context.eventName) {
 		commits = commits.filter(c => c.distinct);
 
-		debug('All Distinct Commits', commits);
+		//debug('All Distinct Commits', commits);
   }
   
   Promise.all(commits.map(processCommit)).then(() => {
-    debug('FILES', Array.from(FILES.values()));
+    debug('FILES', FILES);
     
+    var outputItems = [];
+
+    inputItems.forEach((pattern, i) => {
+      const found = FILES.find(f => f.test(pattern));
+      outputItems.push(found);
+    });
+
+    core.setOutput('items', toJSON(outputItems));
+
   });
   
 });
