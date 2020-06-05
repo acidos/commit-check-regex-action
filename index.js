@@ -3,25 +3,126 @@
 const github  = require('@actions/github');
 const core    = require('@actions/core');
 
-const commits = github.context.payload.commits.filter(c => c.distinct);
+const context = github.context;
+const repo    = context.payload.repository;
+const owner   = repo.owner;
+
+/*const commits = github.context.payload.commits.filter(c => c.distinct);
 const repo    = github.context.payload.repository;
 const org     = repo.organization;
-const owner   = org || repo.owner;
+const owner   = org || repo.owner;*/
 
-const FILES          = [];
-const FILES_MODIFIED = [];
-const FILES_ADDED    = [];
-const FILES_DELETED  = [];
-const FILES_RENAMED  = [];
+const FILES          = new Set();
+const FILES_MODIFIED = new Set();
+const FILES_ADDED    = new Set();
+const FILES_DELETED  = new Set();
+const FILES_RENAMED  = new Set();
 
 const gh    = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
 const items = core.getInput('items');
-const args  = { owner: owner.name, repo: repo.name };
+const args  = { owner: owner.name || owner.login, repo: repo.name };
+
+function debug(msg, obj = null) {
+	core.debug(formatLogMessage(msg, obj));
+}
+
+function info(msg, obj = null) {
+	core.info(formatLogMessage(msg, obj));
+}
+
+function formatLogMessage(msg, obj = null) {
+	return obj ? `${msg}: ${toJSON(obj)}` : msg;
+}
+
+async function getCommits() {
+	let commits;
+
+	debug('Getting commits...');
+
+	switch(context.eventName) {
+		case 'push':
+			commits = context.payload.commits;
+		break;
+
+		case 'pull_request':
+			const url = context.payload.pull_request.commits_url;
+
+			commits = await gh.paginate(`GET ${url}`, args);
+		break;
+
+		default:
+			info('You are using this action on an event for which it has not been tested. Only the "push" and "pull_request" events are officially supported.');
+
+			commits = [];
+		break;
+	}
+
+	return commits;
+}
+
+async function processCommit(commit) {
+	debug('Processing commit', commit);
+
+	args.ref = commit.id || commit.sha;
+
+	debug('Calling gh.repos.getCommit() with args', args)
+
+	let result = await gh.repos.getCommit(args);
+
+	debug('API Response', result);
+
+	if (result && result.data) {
+		const files = result.data.files;
+
+		files.forEach( file => {
+			isModified(file) && FILES.add(file.filename);
+			isAdded(file) && FILES.add(file.filename);
+			isRenamed(file) && FILES.add(file.filename);
+
+			isModified(file) && FILES_MODIFIED.add(file.filename);
+			isAdded(file) && FILES_ADDED.add(file.filename);
+			isDeleted(file) && FILES_DELETED.add(file.filename);
+			isRenamed(file) && FILES_RENAMED.add(file.filename);
+		});
+	}
+}
+
+function toJSON(value) {
+	return JSON.stringify(value, null, 4);
+}
+
+
+debug('context', context);
+debug('args', args);
+
+getCommits().then(commits => {
+	debug('All Commits', commits);
+
+	if ('push' === context.eventName) {
+		commits = commits.filter(c => c.distinct);
+
+		debug('All Distinct Commits', commits);
+  }
+  
+  Promise.all(commits.map(processCommit)).then(() => {
+    debug('FILES', Array.from(FILES.values()));
+    
+  });
+  
+});
+
+
+
+
+
+
+/*
 
 console.log(items);
-console.log(JSON.stringify(commits, null, 2));
-console.log(JSON.stringify(gh.repos, null, 2));
-console.log(JSON.stringify(args, null, 2));
+let r   = await gh.repos.getCommit(args);
+console.log('args: ' + JSON.stringify(commits, null, 2));
+console.log('args: ' + JSON.stringify(gh.repos., null, 2));
+console.log('args: ' + JSON.stringify(args, null, 2));
 
 function isAdded(file) {
 	return 'added' === file.status;
@@ -64,6 +165,19 @@ async function processCommit(commit) {
   await commits.map(processCommit);
   console.log(FILES);
 })();
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 //const a = await commits.map(processCommit);
 
