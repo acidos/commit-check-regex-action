@@ -16,7 +16,7 @@ const FILES_RENAMED  = [];
 
 //console.log('token: ' + core.getInput('token'));
 //github.context.payload
-const gh   = new github.GitHub(core.getInput('token'));//GitHub(core.getInput('token'));
+const gh   = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
 const items = core.getInput('items');
 const args = { owner: owner.name, repo: repo.name };
 
