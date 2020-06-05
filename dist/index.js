@@ -198,7 +198,7 @@ const FILES          = [];
 // const FILES_RENAMED  = new Set();
 
 const gh    = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
-const inputItems = core.getInput('items');
+const inputItems = JSON.parse(core.getInput('items'));
 const args  = { owner: owner.name || owner.login, repo: repo.name };
 
 function debug(msg, obj = null) {
@@ -308,6 +308,8 @@ getCommits().then(commits => {
       const found = FILES.find(f => f.test(pattern));
       outputItems.push(found);
     });
+
+    debug('outputItems', outputItems);
 
     core.setOutput('items', toJSON(outputItems));
 
