@@ -197,7 +197,7 @@ const FILES          = [];
 // const FILES_DELETED  = new Set();
 // const FILES_RENAMED  = new Set();
 
-const gh    = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
+const gh    = new github.getOctokit(core.getInput('token'));
 const inputItems = JSON.parse(core.getInput('items'));
 const args  = { owner: owner.name || owner.login, repo: repo.name };
 
