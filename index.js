@@ -3,8 +3,8 @@
 const github  = require('@actions/github');
 const core    = require('@actions/core');
 
-const commits = context.payload.commits.filter(c => c.distinct);
-const repo    = context.payload.repository;
+const commits = github.context.payload.commits.filter(c => c.distinct);
+const repo    = github.context.payload.repository;
 const org     = repo.organization;
 const owner   = org || repo.owner;
 
