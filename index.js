@@ -58,7 +58,8 @@ async function processCommit(commit) {
 	}
 }
 
-commits.map(processCommit);
+await commits.map(processCommit);
+console.log(FILES);
 
 /*Promise.all(commits.map(processCommit)).then(() => {
 
