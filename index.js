@@ -58,8 +58,14 @@ async function processCommit(commit) {
 	}
 }
 
-await commits.map(processCommit);
-console.log(FILES);
+
+var okta_api_key = (async () => {
+  return  await commits.map(processCommit);
+  console.log(FILES);
+})();
+
+//const a = await commits.map(processCommit);
+
 
 /*Promise.all(commits.map(processCommit)).then(() => {
 
