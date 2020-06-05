@@ -1,4 +1,5 @@
-const { context, GitHub } = require('@actions/github');
+//const { context, GitHub } = require('@actions/github');
+import { context, GitHub } from '@actions/github';
 const core                = require('@actions/core');
 
 const commits = context.payload.commits.filter(c => c.distinct);
@@ -11,6 +12,8 @@ const FILES_MODIFIED = [];
 const FILES_ADDED    = [];
 const FILES_DELETED  = [];
 const FILES_RENAMED  = [];
+
+console.log('token: ' + core.getInput('token'));
 
 const gh   = new GitHub(core.getInput('token'));
 const items = core.getInput('items');
