@@ -5,6 +5,9 @@ inputs:
     description: 'array of regular expressions'
     required: true
     default: '.*'
+  token:
+    description: GitHub Personal Access Token
+    required: true
 outputs:
   items: # output will be available to future steps 
     description: 'array of booleans corresponding to inputs'

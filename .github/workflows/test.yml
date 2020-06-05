@@ -22,4 +22,5 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ./
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         items: '["abc", "def"]'

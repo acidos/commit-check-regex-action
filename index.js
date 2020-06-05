@@ -1,5 +1,3 @@
-// External Dependencies
-// const fs                  = require('fs');
 const { context, GitHub } = require('@actions/github');
 const core                = require('@actions/core');
 
