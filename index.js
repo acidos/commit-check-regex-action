@@ -14,13 +14,14 @@ const FILES_ADDED    = [];
 const FILES_DELETED  = [];
 const FILES_RENAMED  = [];
 
-//console.log('token: ' + core.getInput('token'));
-//github.context.payload
-const gh   = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
+const gh    = new github.getOctokit(core.getInput('token'));//GitHub(core.getInput('token'));
 const items = core.getInput('items');
-const args = { owner: owner.name, repo: repo.name };
+const args  = { owner: owner.name, repo: repo.name };
 
 console.log(items);
+console.log(JSON.stringify(commits, null, 2));
+console.log(JSON.stringify(gh.repos, null, 2));
+console.log(JSON.stringify(args, null, 2));
 
 function isAdded(file) {
 	return 'added' === file.status;
