@@ -213,6 +213,22 @@ function formatLogMessage(msg, obj = null) {
 	return obj ? `${msg}: ${toJSON(obj)}` : msg;
 }
 
+function isAdded(file) {
+	return 'added' === file.status;
+}
+
+function isDeleted(file) {
+	return 'deleted' === file.status;
+}
+
+function isModified(file) {
+	return 'modified' === file.status;
+}
+
+function isRenamed(file) {
+	return 'renamed' === file.status;
+}
+
 async function getCommits() {
 	let commits;
 
