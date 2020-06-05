@@ -21,4 +21,4 @@ jobs:
     - uses: ./
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        items: '{ "patterns" : [ "app\\\\.py", "\\\\.js", "package(?:-lock)?\\\\.json"] }'
+        items: '{ "patterns" : [ "app\\.py", "\\.js", "package(?:-lock)?\\.json"] }'
