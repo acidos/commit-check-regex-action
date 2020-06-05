@@ -198,7 +198,7 @@ const FILES          = [];
 // const FILES_RENAMED  = new Set();
 
 const gh    = new github.getOctokit(core.getInput('token'));
-const inputItems = Array.from(core.getInput('items'));
+const inputItems = (JSON.parse(core.getInput('items'))).patterns;
 const args  = { owner: owner.name || owner.login, repo: repo.name };
 
 function debug(msg, obj = null) {
