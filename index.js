@@ -123,6 +123,8 @@ getCommits().then(commits => {
   Promise.all(commits.map(processCommit)).then(() => {
     debug('FILES', FILES);
     
+    debug('inputItems', inputItems);
+
     var outputItems = [];
 
     inputItems.forEach((pattern, i) => {
