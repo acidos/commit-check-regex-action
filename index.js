@@ -126,7 +126,8 @@ getCommits().then(commits => {
     var outputItems = [];
 
     inputItems.forEach((pattern, i) => {
-      const found = FILES.find(f => f.test(pattern));
+      let re = new RegExp(pattern);
+      const found = FILES.find(f => re.test(f));
       outputItems.push(found);
     });
 
