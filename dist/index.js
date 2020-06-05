@@ -311,7 +311,7 @@ getCommits().then(commits => {
       debug('pattern', pattern);
       let re = new RegExp(pattern);
       const found = FILES.find(f => re.test(f));
-      outputItems.push(found);
+      outputItems.push(found != null ? true : false);
     });
 
     debug('outputItems', outputItems);
