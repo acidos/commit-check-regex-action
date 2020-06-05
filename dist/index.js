@@ -255,6 +255,7 @@ async function getCommits() {
 	return commits;
 }
 
+
 async function processCommit(commit) {
 	//debug('Processing commit', commit);
 
