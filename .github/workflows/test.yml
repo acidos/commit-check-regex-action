@@ -1,10 +1,8 @@
 name: "units-test"
 on:
-  pull_request:
   push:
     branches:
       - master
-      - 'releases/*'
 
 jobs:
   # # unit tests
@@ -19,7 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: ./
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
