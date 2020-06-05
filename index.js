@@ -59,8 +59,8 @@ async function processCommit(commit) {
 }
 
 
-var okta_api_key = (async () => {
-  return  await commits.map(processCommit);
+(async () => {
+  await commits.map(processCommit);
   console.log(FILES);
 })();
 
